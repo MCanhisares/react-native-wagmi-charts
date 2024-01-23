@@ -1,5 +1,5 @@
-import * as React from 'react';
 import * as haptics from 'expo-haptics';
+import * as React from 'react';
 
 import { Box, Button, Flex, Heading, Stack, Text } from 'bumbag-native';
 import {
@@ -8,11 +8,11 @@ import {
   TLineChartPoint,
 } from 'react-native-wagmi-charts';
 
+import { useMemo } from 'react';
 import { Platform } from 'react-native';
+import mockDataNonLinear from './data/line-data-non-linear-domain.json';
 import mockData from './data/line-data.json';
 import mockData2 from './data/line-data2.json';
-import mockDataNonLinear from './data/line-data-non-linear-domain.json';
-import { useMemo } from 'react';
 
 function invokeHaptic() {
   if (['ios', 'android'].includes(Platform.OS)) {
@@ -30,6 +30,7 @@ export default function App() {
     (state) => !state,
     false
   );
+  const [showXAxis, setShowXAxis] = React.useState(false);
 
   const [scaleRelativeToTime, setScaleRelativeToTime] = React.useState(false);
 
@@ -95,6 +96,17 @@ export default function App() {
         <LineChart.Tooltip position="top" />
         <LineChart.HoverTrap />
       </LineChart.CursorCrosshair>
+      {showXAxis && (
+        <LineChart.XAxis
+          dateFormat={{
+            options: {
+              hour: 'numeric',
+              minute: 'numeric',
+              hour12: false,
+            },
+          }}
+        />
+      )}
     </LineChart>
   );
 
@@ -214,6 +226,9 @@ export default function App() {
             <Button
               onPress={() => setToggleSnapToPoint((val) => !val)}
             >{`Toggle Snap ${toggleSnapToPoint ? 'Off' : 'On'}`}</Button>
+            <Button
+              onPress={() => setShowXAxis((val) => !val)}
+            >{`Toggle XAxis ${showXAxis ? 'Off' : 'On'}`}</Button>
           </Flex>
         </Box>
         {!multiData && (
